@@ -1,45 +1,59 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
+import { auth, firestore } from '../../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
 
-export default function AuthScreen() {
-  const [username, setUsername] = useState('');
+export default function RegisterScreen() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [name, setName] = useState('');
+  const [error, setError] = useState<any>(null); // Especifica 'any' como tipo de 'error'
 
-  const handleAuthAction = () => {
-    if (isRegistering) {
-      // Lógica de registro
-      console.log('Registro button pressed');
-    } else {
-      // Lógica de inicio de sesión
-      console.log('Login button pressed');
+  const handleSignUp = async () => {
+    try {
+      // Crea el usuario con Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Guarda los datos del usuario en Firestore
+      await addDoc(collection(firestore, 'users'), {
+        uid: user.uid,
+        email: user.email,
+        name: name,
+      });
+
+      console.log('User signed up and data saved:', user);
+    } catch (error) {
+      console.error('Error signing up:', error);
+      setError(error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{isRegistering ? 'Registro' : 'Login'}</Text>
+      <Text style={styles.header}>Register</Text>
+      {error && <Text style={styles.error}>{error}</Text>}
       <TextInput
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
         style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
       />
       <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
         secureTextEntry
       />
-      <TouchableOpacity onPress={handleAuthAction} style={styles.button}>
-        <Text style={styles.buttonText}>{isRegistering ? 'Registro' : 'Login'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)} style={styles.link}>
-        <Text style={styles.linkText}>
-          {isRegistering ? 'Already have an account? Login here' : 'Don\'t have an account? Register here'}
-        </Text>
-      </TouchableOpacity>
+      <Button title="Sign Up" onPress={handleSignUp} />
     </View>
   );
 }
@@ -48,41 +62,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
   },
-  title: {
+  header: {
     fontSize: 24,
-    marginBottom: 16,
+    textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
-    width: '80%',
     height: 40,
-    borderColor: '#ccc',
+    borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 16,
-    paddingLeft: 10,
+    marginBottom: 10,
+    paddingHorizontal: 8,
   },
-  button: {
-    width: '80%',
-    height: 40,
-    backgroundColor: '#3b5998',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    marginBottom: 16,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  link: {
-    marginTop: 16,
-  },
-  linkText: {
-    color: '#3b5998',
-    fontSize: 16,
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
