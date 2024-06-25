@@ -21,7 +21,7 @@ export default function HomeScreen() {
         Bienvenido a nuestro innovador proyecto de carrito a control remoto. Este carrito puede ser controlado mediante ondas cerebrales con una diadema o con el teléfono. Nuestro objetivo es proporcionar una herramienta útil y accesible para ayudar a personas con discapacidades motoras. Esperamos que encuentres este proyecto inspirador y útil. ¡Gracias por unirte a nosotros en esta emocionante aventura tecnológica!
         </ThemedText>
         <Image
-          source={require('@/assets/images/react-logo.png')}
+          source={require('@/assets/images/equipo.jpg')}
           style={styles.photo}
         />
       </ThemedView>
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   photo: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
   },
   reactLogo: {
     height: 178,
