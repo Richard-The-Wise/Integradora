@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, StyleSheet, Text, Modal, Pressable } from 'react-native';
-import { auth, firestore } from '../../firebase';
+import { auth, firestore } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import Swal from 'sweetalert2';
 
-export default function LoginScreen() {
+export default function IndexScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null); // Cambiar a 'string | null'
@@ -24,6 +26,7 @@ export default function LoginScreen() {
       await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in');
       setError(null); // Limpiar el error si el login es exitoso
+      router.replace('/home');
     } catch (error: any) { // Especificar 'any' para el catch
       console.error('Error logging in:', error);
       setError(error.message || 'Error logging in'); // Asegurarse de que 'message' exista
@@ -36,21 +39,13 @@ export default function LoginScreen() {
       const userCredential = await createUserWithEmailAndPassword(auth, emailForm, passwordForm);
       const user = userCredential.user;
 
-      // Guarda los datos del usuario en Firestore
-      /*
-      await addDoc(collection(firestore, 'users'), {
-        uid: user.uid,
-        email: user.email,
-        //name: nameForm,
-      });
-      */
-
       console.log('User signed up and data saved:', user);
       setModalVisible(false); // Cerrar el modal al registrarse
       setEmailForm('');
       setPasswordForm('');
       setNameForm('');
-      setErrorForm(null); //
+      setErrorForm(null);
+      Swal.fire("SweetAlert2 is working!");
     } catch (error: any) { // Especificar 'any' para el catch
       console.error('Error signing up:', error);
       setErrorForm(error.message || 'Error signing up'); // Asegurarse de que 'message' exista
@@ -59,6 +54,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <FontAwesome6 name="user-ninja" style={styles.loginIcon} size={74}  />
       <Text style={styles.header}>Login</Text>
       {error && <Text style={styles.error}>{error}</Text>}
       <TextInput
@@ -79,7 +75,7 @@ export default function LoginScreen() {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
-      <text style={styles.separator}></text>
+      <Text style={styles.separator}></Text>
       <Button title="Registrate" onPress={() => setModalVisible(true)} />
 
       <Modal
@@ -89,14 +85,14 @@ export default function LoginScreen() {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Pressable onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="black" />
+                <Ionicons name="close" style= {styles.closeModal} size = {28}/>
             </Pressable>
-            <Text style={styles.header}>Register</Text>
+            <Text style={styles.header}>Registro</Text>
 
             {errorForm && <Text style={styles.error}>{errorForm}</Text>}
             <TextInput
                 style={styles.input}
-                placeholder="Name"
+                placeholder="Nombre"
                 value={nameForm}
                 onChangeText={setNameForm}
             />
@@ -165,9 +161,26 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   separator: {
-    height: 10,
+    height: 5,
     width: '100%',
-    backgroundColor: '#E4E4E4', // Puedes cambiar el color de la línea aquí
-    marginVertical: 8, // Puedes ajustar el espacio vertical alrededor de la línea
+    backgroundColor: '#FFFFF', 
+    marginVertical: 5, 
   },
+  closeModal: {    
+    color: "black",
+    position: "absolute",
+    top: -30,
+    right: -120,
+    zIndex: 1000,
+    padding: 10,
+  },
+  loginIcon: {
+    color: "black",
+    position: "absolute",
+    top: 230,
+    left: 120,
+    zIndex: 1000,
+  }
+
 });
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
