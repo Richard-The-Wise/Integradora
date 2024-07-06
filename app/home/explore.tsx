@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
+const mapStyles = {
+  width: "100%",
+  height: "500px"
+};
+
+const defaultCenter = {
+  lat: 40.748817,
+  lng: -73.985428
+};
 
 export default function GPSScreen() {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -9,21 +19,6 @@ export default function GPSScreen() {
   useEffect(() => {
     const requestLocationPermission = async () => {
       try {
-        if (Platform.OS === 'android') {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Location Permission',
-              message: 'This app needs access to your location to show it on the map.',
-              buttonPositive: 'OK',
-            },
-          );
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            setErrorMsg('Location permission denied');
-            return;
-          }
-        }
-
         navigator.geolocation.getCurrentPosition(
           (position) => {
             setLatitude(position.coords.latitude);
@@ -50,31 +45,35 @@ export default function GPSScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Ubicación Actual</Text>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Ubicación Actual</h1>
       {latitude && longitude ? (
-        <Text>
-          Latitud: {latitude}, Longitud: {longitude}
-        </Text>
+        <LoadScript googleMapsApiKey="AIzaSyBnbf3B7ng1R20paOwrGpyzI7yLeKA8Dso">
+          <GoogleMap
+            mapContainerStyle={mapStyles}
+            center={{ lat: latitude, lng: longitude }}
+            zoom={13}
+          >
+            <Marker position={{ lat: latitude, lng: longitude }} />
+          </GoogleMap>
+        </LoadScript>
       ) : errorMsg ? (
-        <Text>Error: {errorMsg}</Text>
+        <p>Error: {errorMsg}</p>
       ) : (
-        <Text>Obteniendo ubicación...</Text>
+        <p>Obteniendo ubicación...</p>
       )}
-    </View>
+    </div>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    textAlign: 'center' as 'center',
+    padding: '16px',
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: '24px',
+    marginBottom: '16px',
   },
-});
+};
