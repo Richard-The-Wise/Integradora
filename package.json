@@ -15,11 +15,14 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@arduino/arduino-iot-client": "^2.0.0",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-firebase/app": "^20.1.0",
     "@react-native-firebase/auth": "^20.1.0",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
     "expo": "^51.0.14",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.7",

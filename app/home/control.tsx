@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, Dimensions, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { LineChart } from 'react-native-chart-kit';
+import { movement } from '../../scripts/moveCar';
 
 export default function ControlScreen() {
   // Datos de ejemplo para las ondas cerebrales
@@ -25,7 +26,9 @@ export default function ControlScreen() {
         <FontAwesome.Button
           name="arrow-up"
           backgroundColor="#3b5998"
-          onPress={() => console.log('Move Up')}
+          onLongPress={() => movement(true,"UP")}
+          onPressOut={() => movement(false,"UP")}
+          // onPress={() => console.log('Move Up')}
           style={styles.button}
         >
           Up
@@ -36,7 +39,8 @@ export default function ControlScreen() {
         <FontAwesome.Button
           name="arrow-left"
           backgroundColor="#3b5998"
-          onPress={() => console.log('Move Left')}
+          onLongPress={() => movement(true,"LEFT")}
+          onPressOut={() => movement(false,"LEFT")}
           style={styles.button}
         >
           Left
@@ -52,7 +56,8 @@ export default function ControlScreen() {
         <FontAwesome.Button
           name="arrow-right"
           backgroundColor="#3b5998"
-          onPress={() => console.log('Move Right')}
+          onLongPress={() => movement(true,"RIGHT")}
+          onPressOut={() => movement(false,"RIGHT")}
           style={styles.button}
         >
           Right
@@ -63,7 +68,9 @@ export default function ControlScreen() {
         <FontAwesome.Button
           name="arrow-down"
           backgroundColor="#3b5998"
-          onPress={() => console.log('Move Down')}
+          onLongPress={() => movement(true,"DOWN")}
+          onPressOut={() => movement(false,"DOWN")}
+          // onPress={() => console.log('Move Down')}
           style={styles.button}
         >
           Down
